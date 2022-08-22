@@ -3,36 +3,44 @@ package models.properties
 /**
  * Objects that can be moved or entities that can move
  */
-abstract class Movable() {
-    private var location: Location = Location(0, 0)
+abstract class Movable(loc: Location) {
+    private val location: Location = loc
+
+    fun turnWest() {
+        location.direction = DIRECTION.WEST
+    }
+
+    fun turnEast() {
+        location.direction = DIRECTION.EAST
+    }
+
+    fun turnNorth() {
+        location.direction = DIRECTION.NORTH
+    }
+
+    fun turnSouth() {
+        location.direction = DIRECTION.SOUTH
+    }
 
     fun moveLeft() {
-        location.direction = DIRECTION.WEST
-        if (location.xPos - 1 < Location.Position.MIN_POS) return
-        location.xPos -= 1
+        if (location.x - 1 < Location.Position.MIN_POS) return
+        location.x -= 1
     }
 
     fun moveRight() {
-        location.direction = DIRECTION.EAST
-        if (location.xPos + 1 > Location.Position.MAX_POS) return
-        location.xPos += 1
+        if (location.x + 1 > Location.Position.MAX_POS) return
+        location.x += 1
     }
 
     fun moveUp() {
-        location.direction = DIRECTION.NORTH
-        if (location.yPos - 1 < Location.Position.MIN_POS) return
-        location.yPos -= 1
+        if (location.y - 1 < Location.Position.MIN_POS) return
+        location.y -= 1
     }
 
     fun moveDown() {
-        location.direction = DIRECTION.SOUTH
-        if (location.yPos + 1 > Location.Position.MAX_POS) return
-        location.yPos += 1
+        if (location.y + 1 > Location.Position.MAX_POS) return
+        location.y += 1
     }
-}
-
-interface MovableSpace {
-
 }
 
 /**
@@ -40,16 +48,23 @@ interface MovableSpace {
  *
  * Includes properties such as the x position, y position and the direction the object is facing.
  */
-class Location(x: Int, y: Int) {
+class Location(xPos: Int, yPos: Int) {
+    /**
+     * 20 x 20 grid world map
+     */
     object Position {
         const val MIN_POS = 0
         const val MAX_POS = 19
     }
-    var xPos = x
-    var yPos = y
+
+    var x = xPos
+    var y = yPos
     var direction = DIRECTION.SOUTH
 }
 
+/**
+ * Direction the entity is facing.
+ */
 enum class DIRECTION {
     NORTH,
     SOUTH,

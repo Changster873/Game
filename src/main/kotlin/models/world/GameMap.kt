@@ -1,5 +1,6 @@
 package models.world
 
+import view.MapCell
 import java.io.File
 import java.util.*
 
@@ -9,8 +10,8 @@ import java.util.*
  * Loads and retrieves the world map for the game.
  */
 class GameMap {
-    var tiles: MutableList<MutableList<String>> = mutableListOf()
-    var currentMap = ""
+    private var tiles: MutableList<MutableList<MapCell>> = mutableListOf()
+    private var currentMap = ""
 
     /**
      * Loads given map, so the game can render the associated sprites
@@ -25,9 +26,9 @@ class GameMap {
         var yPos = 0
         while (scanner.hasNext()) {
             val targetLine = scanner.nextLine().toCharArray()
-            val xRow = mutableListOf<String>()
+            val xRow = mutableListOf<MapCell>()
             targetLine.forEach { value ->
-                xRow.add(value.toString())
+                xRow.add(MapCell.values().find { it.encoding == value.toString()}!!)
             }
             tiles.add(xRow)
             yPos++

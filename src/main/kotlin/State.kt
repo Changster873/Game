@@ -13,11 +13,10 @@ import java.util.*
 class Game {
     private var state: MutableMap<String, String> = mutableMapOf()
     private var gameMap = GameMap()
-    var player: Player? = null
+    var player: Player? = Player()
 
     fun initialise() {
         println("Initialising game...")
-        startNewGame("Chan")
         println("Loading map...")
         gameMap.loadMap("public/world-map/map_1.txt")
     }
