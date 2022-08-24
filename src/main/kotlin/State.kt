@@ -1,5 +1,6 @@
 import models.entity.Player
 import models.world.GameMap
+import view.Screen
 import java.io.File
 import java.util.*
 
@@ -18,7 +19,8 @@ class Game {
     fun initialise() {
         println("Initialising game...")
         println("Loading map...")
-        gameMap.loadMap("public/world-map/map_1.txt")
+        gameMap.loadMap("src/main/resources/world-map/map_1.txt")
+        loadScreen()
     }
 
     /**
@@ -26,7 +28,7 @@ class Game {
      */
     private fun loadGame() {
         println("Loading save file...")
-        val file = File("/public/save_1.txt")
+        val file = File("src/main/resources/save_1.txt")
         runCatching {
             val scanner = Scanner(file)
             while (scanner.hasNext()) {
@@ -43,7 +45,7 @@ class Game {
      */
     private fun saveGame(new: Boolean = false) {
         if (!new) println("Saving progress...")
-        File("public/save_1.txt").bufferedWriter().use { out ->
+        File("src/main/resources/save_1.txt").bufferedWriter().use { out ->
             state.forEach {
                 out.write("${it.key}:${it.value}\n")
             }
@@ -58,7 +60,7 @@ class Game {
         val game = """
             Name:$name
             Level:1
-            Map:public/world-map/map_1.txt
+            Map:src/main/resources/world-map/map_1.txt
         """.trimIndent()
         val scanner = Scanner(game)
         while (scanner.hasNext()) {
@@ -69,5 +71,9 @@ class Game {
         }
         // same the state so a "Continue" button after the user has started a new game
         saveGame(true)
+    }
+
+    private fun loadScreen() {
+        Screen()
     }
 }
