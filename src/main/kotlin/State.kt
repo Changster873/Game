@@ -4,6 +4,13 @@ import view.Screen
 import java.io.File
 import java.util.*
 
+class State {
+    companion object {
+        var game: Game? = null
+        var assetLoadingState: String = ""
+    }
+}
+
 /**
  * Game
  *
@@ -12,22 +19,30 @@ import java.util.*
  *
  */
 class Game {
-    private var state: MutableMap<String, String> = mutableMapOf()
-    private var gameMap = GameMap()
-    var player: Player? = Player()
+    // Visual
+    var screen: Screen? = null
+
+    companion object {
+        // Audio
+        val music = SoundSystem()
+
+        // Map
+        var gameMap = GameMap()
+
+        // Game logic
+        var state: MutableMap<String, String> = mutableMapOf()
+        var player: Player? = Player()
+    }
 
     fun initialise() {
-        println("Initialising game...")
-        println("Loading map...")
         gameMap.loadMap("src/main/resources/world-map/map_1.txt")
-        loadScreen()
     }
 
     /**
      * Loads a saved game slot into the state controller
      */
     private fun loadGame() {
-        println("Loading save file...")
+        State.assetLoadingState = "Loading save file..."
         val file = File("src/main/resources/save_1.txt")
         runCatching {
             val scanner = Scanner(file)
@@ -44,7 +59,7 @@ class Game {
      * Saves the current game state into a file
      */
     private fun saveGame(new: Boolean = false) {
-        if (!new) println("Saving progress...")
+        if (!new) State.assetLoadingState = "Saving progress..."
         File("src/main/resources/save_1.txt").bufferedWriter().use { out ->
             state.forEach {
                 out.write("${it.key}:${it.value}\n")
@@ -55,8 +70,8 @@ class Game {
     /**
      * Starts a new game with the given player name
      */
-    private fun startNewGame(name: String) {
-        println("Starting new game...")
+    fun startNewGame(name: String) {
+        State.assetLoadingState = "Starting new game..."
         val game = """
             Name:$name
             Level:1
@@ -71,9 +86,5 @@ class Game {
         }
         // same the state so a "Continue" button after the user has started a new game
         saveGame(true)
-    }
-
-    private fun loadScreen() {
-        Screen()
     }
 }

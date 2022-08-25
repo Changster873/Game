@@ -17,6 +17,7 @@ class GameMap {
      * Loads given map, so the game can render the associated sprites
      */
     fun loadMap(whichMap: String) {
+        State.assetLoadingState = "Loading world map..."
         // clear the current map
         tiles = mutableListOf()
         currentMap = ""
@@ -28,7 +29,7 @@ class GameMap {
             val targetLine = scanner.nextLine().toCharArray()
             val xRow = mutableListOf<MapCell>()
             targetLine.forEach { value ->
-                xRow.add(MapCell.values().find { it.encoding == value.toString()}!!)
+                xRow.add(MapCell.values().find { it.encoding == value.toString() }!!)
             }
             tiles.add(xRow)
             yPos++

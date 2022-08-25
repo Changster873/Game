@@ -1,2 +1,3 @@
-Name:Sonyta
+Name:test
 Level:1
+Map:src/main/resources/world-map/map_1.txt

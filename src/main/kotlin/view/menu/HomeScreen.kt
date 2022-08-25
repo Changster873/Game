@@ -1,9 +1,11 @@
 package view.menu
 
-import view.Callback
+import State
 import view.initialise
+import view.menu.components.Callback
 import view.menu.components.MenuButton
 import view.menu.components.Wallpaper
+import java.awt.Color
 import java.awt.Font
 import java.io.File
 import javax.imageio.ImageIO
@@ -21,6 +23,7 @@ class HomeScreen : JPanel() {
         // title of the game
         val title = JLabel("LOST", SwingConstants.CENTER)
         title.font = Font("Courier New", Font.PLAIN, 125)
+        title.foreground = Color(230, 230, 230)
         title.setBounds(350, 10, 300, 300)
         this.add(title)
         val bloodSplatter = ImageIO.read(File("src/main/resources/assets/blood-splatter.png"))
@@ -29,10 +32,15 @@ class HomeScreen : JPanel() {
         this.add(bloodIcon)
 
         // start button
-        this.add(MenuButton(250, 350, "Start Game", null))
+        this.add(MenuButton(250, 350, "Start Game", object : Callback() {
+            override fun invoke() {
+                State.game!!.screen?.contentPane = LoadingScreen()
+                State.game!!.startNewGame("test")
+            }
+        }))
 
         // exit button
-        this.add(MenuButton(250, 650, "Exit Game", object : Callback() {
+        this.add(MenuButton(250, 460, "Exit Game", object : Callback() {
             override fun invoke() {
                 exitProcess(0)
             }

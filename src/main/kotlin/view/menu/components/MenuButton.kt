@@ -1,6 +1,5 @@
 package view.menu.components
 
-import view.Callback
 import java.awt.Color
 import java.awt.Cursor
 import java.awt.Font
@@ -44,4 +43,11 @@ class MenuButton(x: Int, y: Int, text: String, buttonAction: Callback?) : JLabel
             }
         })
     }
+}
+
+/**
+ * The callback function that is run after a set of events.
+ */
+abstract class Callback {
+    abstract fun invoke();
 }

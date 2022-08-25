@@ -1,8 +1,8 @@
 package view
 
-import javazoom.jl.player.Player
+import Game
 import view.menu.HomeScreen
-import java.io.FileInputStream
+import java.awt.Toolkit
 import javax.swing.JFrame
 import javax.swing.JPanel
 
@@ -17,14 +17,24 @@ class Screen() : JFrame() {
         // make frame appear
         this.isVisible = true
         // play sound for this screen
-        val music = FileInputStream("src/main/resources/sound/adventure-music.mp3")
-        val player = Player(music)
-        player.play()
+        Game.music.fileName = "src/main/resources/sound/adventure-music.mp3"
+        Game.music.start()
+    }
+
+    /**
+     * Changing the panel so the frame loads a new view.
+     */
+    private fun changePanel(panel: JPanel) {
+        this.contentPane = panel
+        // make frame appear
+        this.revalidate()
+        this.repaint()
+        this.isVisible = true
     }
 
     companion object {
-        const val SCREEN_WIDTH = 1920
-        const val SCREEN_HEIGHT = 1080
+        val SCREEN_WIDTH = Toolkit.getDefaultToolkit().screenSize.width
+        val SCREEN_HEIGHT = Toolkit.getDefaultToolkit().screenSize.height
     }
 }
 
@@ -35,6 +45,8 @@ fun JFrame.initialise() {
     this.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
     // no layout
     this.layout = null
+    // full screen experience
+    this.extendedState = JFrame.MAXIMIZED_BOTH;
 }
 
 fun JPanel.initialise() {
@@ -42,8 +54,4 @@ fun JPanel.initialise() {
     this.setBounds(0, 0, Screen.SCREEN_WIDTH, Screen.SCREEN_HEIGHT)
     // no layout
     this.layout = null
-}
-
-abstract class Callback {
-    abstract fun invoke();
 }
