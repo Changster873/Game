@@ -1,5 +1,6 @@
 package view.menu
 
+import Game
 import view.initialise
 import java.awt.Color
 import java.awt.Font
@@ -11,7 +12,7 @@ import javax.swing.SwingConstants
 /**
  * The loading screen when transitioning between two views.
  */
-class LoadingScreen : JPanel() {
+class LoadingScreen(game: Game) : JPanel() {
     private val timer = Timer()
 
     init {
@@ -41,22 +42,28 @@ class LoadingScreen : JPanel() {
         assetLoadingState.setBounds(1400, 600, 500, 500)
         this.add(assetLoadingState)
 
-        // loading dots set
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                if (dots == "...") {
-                    dots = ""
-                }
-                dots += "."
-                dotsOnScreen.text = dots
-                dotsOnScreen.revalidate()
-                dotsOnScreen.repaint()
+        this.add(game)
 
-                assetLoadingState.text = State.assetLoadingState
-                assetLoadingState.revalidate()
-                assetLoadingState.repaint()
-            }
-        }, 500, 1000)
+        // loading dots set
+        timer.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    if (dots == "...") {
+                        dots = ""
+                    }
+                    dots += "."
+                    dotsOnScreen.text = dots
+                    dotsOnScreen.revalidate()
+                    dotsOnScreen.repaint()
+
+                    assetLoadingState.text = State.assetLoadingState
+                    assetLoadingState.revalidate()
+                    assetLoadingState.repaint()
+                }
+            },
+            500,
+            1000
+        )
 
         this.background = Color(15, 15, 15)
     }

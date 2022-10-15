@@ -1,25 +1,20 @@
 package models.properties
 
+import javax.swing.ImageIcon
+
 /**
  * Objects that can be moved or entities that can move
  */
 abstract class Movable(loc: Location) {
     private val location: Location = loc
+    val animation: MutableMap<String, List<ImageIcon>> = mutableMapOf()
 
-    fun turnWest() {
-        location.direction = DIRECTION.WEST
+    fun turnLeft() {
+        location.direction = DIRECTION.LEFT
     }
 
-    fun turnEast() {
-        location.direction = DIRECTION.EAST
-    }
-
-    fun turnNorth() {
-        location.direction = DIRECTION.NORTH
-    }
-
-    fun turnSouth() {
-        location.direction = DIRECTION.SOUTH
+    fun turnRight() {
+        location.direction = DIRECTION.RIGHT
     }
 
     fun moveLeft() {
@@ -59,15 +54,13 @@ class Location(xPos: Int, yPos: Int) {
 
     var x = xPos
     var y = yPos
-    var direction = DIRECTION.SOUTH
+    var direction = DIRECTION.RIGHT
 }
 
 /**
  * Direction the entity is facing.
  */
 enum class DIRECTION {
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST
+    LEFT,
+    RIGHT
 }

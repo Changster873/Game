@@ -1,7 +1,6 @@
 package view
 
 import Game
-import view.menu.HomeScreen
 import java.awt.Toolkit
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -9,11 +8,9 @@ import javax.swing.JPanel
 /**
  * The game screen that will hold the gameplay frame.
  */
-class Screen() : JFrame() {
+class Screen(game: Game) : JFrame() {
     init {
         this.initialise()
-
-        this.contentPane = HomeScreen()
         // make frame appear
         this.isVisible = true
         // play sound for this screen
@@ -43,10 +40,10 @@ fun JFrame.initialise() {
     this.setBounds(0, 0, Screen.SCREEN_WIDTH, Screen.SCREEN_HEIGHT)
     // exit the program if user clicks on X
     this.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-    // no layout
-    this.layout = null
+    this.isResizable = false
+    this.setLocationRelativeTo(null)
     // full screen experience
-    this.extendedState = JFrame.MAXIMIZED_BOTH;
+    this.extendedState = JFrame.MAXIMIZED_BOTH
 }
 
 fun JPanel.initialise() {
