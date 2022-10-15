@@ -1,6 +1,7 @@
 package models
 
 import java.awt.Graphics
+import java.awt.Rectangle
 import java.awt.image.BufferedImage
 
 abstract class GameObject(
@@ -21,6 +22,12 @@ abstract class GameObject(
     // what the object will look like on screen
     abstract fun render(g: Graphics)
 
+    // what space is taken up by this object on screen
+    abstract fun getBounds(): Rectangle
+
+    // determine whether this object has a collision or not
+    abstract fun collision()
+
     abstract fun stillSprites(): List<BufferedImage>
     abstract fun movingSprites(): List<BufferedImage>
 
@@ -40,5 +47,5 @@ abstract class GameObject(
 
 enum class GameObjectID {
     Player,
-    Enemy
+    BasicEnemy
 }

@@ -1,4 +1,5 @@
 import models.GameObjectID
+import models.entity.BasicEnemy
 import models.entity.Player
 import models.world.GameMap
 import view.HUD
@@ -30,7 +31,13 @@ class Game : Runnable, Canvas() {
     init {
         this.addKeyListener(KeyInput(handler))
 
-        handler.addObject(Player(100.0, 100, 100, GameObjectID.Player))
+        handler.addObject(Player(100.0, 100, 100, GameObjectID.Player, handler))
+        handler.addObject(BasicEnemy(100.0, 200, 13, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 34, 213, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 234, 234, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 553, 543, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 1345, 23, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 234, 45, GameObjectID.BasicEnemy, handler))
         Window("Lost Game", this)
     }
 
