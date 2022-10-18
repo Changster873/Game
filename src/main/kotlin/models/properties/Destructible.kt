@@ -11,5 +11,4 @@ interface Destructible {
      */
     var health: Double
 
-    fun perishedSprites(): List<BufferedImage>
 }

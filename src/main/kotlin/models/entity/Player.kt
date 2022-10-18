@@ -1,18 +1,18 @@
 package models.entity
 
 import Handler
-import State
+import SoundSystem
 import models.GameObject
+import models.GameObjectAction
 import models.GameObjectID
 import models.properties.Destructible
 import models.properties.Warmonger
 import view.Screen
-import view.sprites.FilePath
 import view.sprites.Sprites
+import view.sprites.SpritesLoader
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Rectangle
-import java.awt.image.BufferedImage
 
 class Player(
     override var health: Double = 100.0,
@@ -20,40 +20,38 @@ class Player(
     y: Int,
     id: GameObjectID,
     private val handler: Handler,
+    val spritesLoader: SpritesLoader,
     override var speedX: Int = 0,
     override var speedY: Int = 0
 ) : Destructible, Warmonger, GameObject(x, y, id) {
     var name: String? = null
     var level: Int = 1
     var experience: Int = 0
-
-    init {
-        State.assetLoadingState = "Loading Character assets"
-        animation["still"] = stillSprites()
-        animation["move"] = movingSprites()
-        animation["attack"] = attackSprites()
-        animation["perish"] = perishedSprites()
-    }
-
-    override fun perishedSprites(): List<BufferedImage> {
-        return Sprites.get(Sprites.spriteFileRange(listOf(24, 25, 26), FilePath.Player.path))
-    }
-
-    override fun stillSprites(): List<BufferedImage> {
-        return Sprites.get(Sprites.spriteFileRange(listOf(1, 2, 3, 4, 5, 6), FilePath.Player.path))
-    }
-
-    override fun movingSprites(): List<BufferedImage> {
-        return Sprites.get(Sprites.spriteFileRange(listOf(7, 8, 9, 10, 11, 12), FilePath.Player.path))
-    }
-
-    override fun attackSprites(): List<BufferedImage> {
-        return Sprites.get(Sprites.spriteFileRange(listOf(13, 14, 15), FilePath.Player.path))
-    }
+    var iteration = 10
+    var spriteMaxLimit = 60
+    var action = GameObjectAction.Idle
 
     override fun tick() {
         x += speedX
         y += speedY
+
+        spriteMaxLimit = when (action) {
+            GameObjectAction.Idle -> {
+                60
+            }
+
+            GameObjectAction.Moving -> {
+                60
+            }
+
+            GameObjectAction.Attack -> {
+                40
+            }
+        }
+
+        if (iteration <= spriteMaxLimit) {
+            iteration++
+        } else iteration = 10
 
         x = clamp(x, 0, Screen.SCREEN_WIDTH - 100)
         y = clamp(y, 0, Screen.SCREEN_HEIGHT - 120)
@@ -67,6 +65,7 @@ class Player(
             if (it.id == GameObjectID.BasicEnemy) {
                 if (getBounds().intersects((it as BasicEnemy).getBounds())) {
                     this.health -= 2
+                    SoundSystem.soundMap["collision"]!!.play()
                 }
             }
         }
@@ -74,11 +73,19 @@ class Player(
 
     override fun render(g: Graphics) {
         g.color = Color.WHITE
-        g.fillRect(x, y, 32, 32)
+        g.drawImage(
+            Sprites.grabFromSpriteSheet(action.ordinal + 1, iteration.floorDiv(10), 48, 48, spritesLoader.sprites["player"]!!),
+            x,
+            y,
+            200,
+            200,
+            null
+        )
+        g.drawRect(x + 75, y + 95, 55, 85)
     }
 
     override fun getBounds(): Rectangle {
-        return Rectangle(x, y, 32, 32)
+        return Rectangle(x + 75, y + 95, 55, 85)
     }
 
     /**

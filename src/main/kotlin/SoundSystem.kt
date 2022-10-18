@@ -1,42 +1,18 @@
-import javazoom.jl.player.Player
-import java.io.FileInputStream
+import org.newdawn.slick.Music
+import org.newdawn.slick.Sound
 
-/**
- * The main game sound system.
- */
-class SoundSystem : Thread() {
-    private var player: Player? = null
-    var fileName: String? = null
-
-    /**
-     * Given the new music, it will play that and stop the old one if any.
-     */
-    fun changeMusic(newFile: String) {
-        stopMusic()
-        fileName = newFile
-        startMusic()
+class SoundSystem {
+    companion object {
+        val musicMap = mutableMapOf<String, Music>()
+        val soundMap = mutableMapOf<String, Sound>()
     }
 
-    /**
-     * Retrieves given file to play the music.
-     */
-    private fun startMusic() {
-        val music = FileInputStream(fileName)
-        player = Player(music)
-        player!!.play()
-    }
-
-    /**
-     * Stops the current music that is playing.
-     */
-    fun stopMusic() {
-        player?.close()
-    }
-
-    /**
-     * Will play the music with a runnable thread so it can be terminated.
-     */
-    override fun run() {
-        startMusic()
+    fun load() {
+        runCatching {
+            soundMap["collision"] = Sound("/gameRes/sound/click_sound_2.wav")
+            soundMap["menu-click"] = Sound("gameRes/sound/click_sound.ogg")
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 }

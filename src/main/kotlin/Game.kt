@@ -5,6 +5,8 @@ import models.world.GameMap
 import view.HUD
 import view.Screen
 import view.Window
+import view.menu.MainMenu
+import view.sprites.SpritesLoader
 import java.awt.Canvas
 import java.awt.Color
 import java.io.File
@@ -27,23 +29,23 @@ class Game : Runnable, Canvas() {
     private var running = false
     private val handler: Handler = Handler()
     private val hud: HUD = HUD(handler)
+    private val menu: MainMenu = MainMenu()
+    private val audioSystem: SoundSystem = SoundSystem()
+    private val spriteSheetLoader = SpritesLoader()
 
     init {
-        this.addKeyListener(KeyInput(handler))
+        audioSystem.load()
 
-        handler.addObject(Player(100.0, 100, 100, GameObjectID.Player, handler))
-        handler.addObject(BasicEnemy(100.0, 200, 13, GameObjectID.BasicEnemy, handler))
-        handler.addObject(BasicEnemy(100.0, 34, 213, GameObjectID.BasicEnemy, handler))
-        handler.addObject(BasicEnemy(100.0, 234, 234, GameObjectID.BasicEnemy, handler))
-        handler.addObject(BasicEnemy(100.0, 553, 543, GameObjectID.BasicEnemy, handler))
-        handler.addObject(BasicEnemy(100.0, 1345, 23, GameObjectID.BasicEnemy, handler))
-        handler.addObject(BasicEnemy(100.0, 234, 45, GameObjectID.BasicEnemy, handler))
+        spriteSheetLoader.getSpriteSheet("player", "player")
+
+        this.addKeyListener(KeyInput(handler))
+        this.addMouseListener(menu)
+
         Window("Lost Game", this)
     }
 
     companion object {
-        // Audio
-        val music = SoundSystem()
+        var gameState: State = State.Menu
 
         // Map
         var gameMap = GameMap()
@@ -53,14 +55,23 @@ class Game : Runnable, Canvas() {
     }
 
     fun initialise() {
+        handler.addObject(Player(100.0, 100, 100, GameObjectID.Player, handler, spriteSheetLoader))
+        handler.addObject(BasicEnemy(100.0, 200, 13, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 34, 213, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 234, 234, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 553, 543, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 1345, 23, GameObjectID.BasicEnemy, handler))
+        handler.addObject(BasicEnemy(100.0, 234, 45, GameObjectID.BasicEnemy, handler))
+
         gameMap.loadMap("src/main/resources/world-map/map_1.txt")
+
+        gameState = State.Game
     }
 
     /**
      * Loads a saved game slot into the state controller
      */
     private fun loadGame() {
-        State.assetLoadingState = "Loading save file"
         val file = File("src/main/resources/save_1.txt")
         runCatching {
             val scanner = Scanner(file)
@@ -69,7 +80,6 @@ class Game : Runnable, Canvas() {
                 targetLine.split(":").let { state.put(it[0], it[1]) }
             }
         }.onFailure {
-            State.assetLoadingState = "Error: Could not find save file. Starting new game."
         }
     }
 
@@ -77,7 +87,6 @@ class Game : Runnable, Canvas() {
      * Saves the current game state into a file
      */
     private fun saveGame(new: Boolean = false) {
-        if (!new) State.assetLoadingState = "Saving progress"
         File("src/main/resources/save_1.txt").bufferedWriter().use { out ->
             state.forEach {
                 out.write("${it.key}:${it.value}\n")
@@ -89,7 +98,6 @@ class Game : Runnable, Canvas() {
      * Starts a new game with the given player name
      */
     fun startNewGame(name: String) {
-        State.assetLoadingState = "Starting new game"
         val game = """
             Name:$name
             Level:1
@@ -122,8 +130,10 @@ class Game : Runnable, Canvas() {
     }
 
     private fun tick() {
-        handler.tick()
-        hud.tick()
+        if (gameState == State.Game) {
+            hud.tick()
+            handler.tick()
+        }
     }
 
     private fun render() {
@@ -137,8 +147,24 @@ class Game : Runnable, Canvas() {
         g.color = Color.BLACK
         g.fillRect(0, 0, Screen.SCREEN_WIDTH, Screen.SCREEN_HEIGHT)
 
-        handler.render(g)
-        hud.render(g)
+        when (gameState) {
+            State.Initialise -> {
+                initialise()
+            }
+
+            State.Game -> {
+                handler.render(g)
+                hud.render(g)
+            }
+
+            State.Menu -> {
+                menu.render(g)
+            }
+
+            State.Options -> {}
+            State.Pause -> {}
+            State.End -> {}
+        }
 
         g.dispose()
         bs.show()

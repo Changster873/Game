@@ -28,9 +28,6 @@ abstract class GameObject(
     // determine whether this object has a collision or not
     abstract fun collision()
 
-    abstract fun stillSprites(): List<BufferedImage>
-    abstract fun movingSprites(): List<BufferedImage>
-
     companion object {
         /**
          * To limit the boundaries of objects moving on screen, cannot move past the min or max points of the frame.
@@ -48,4 +45,10 @@ abstract class GameObject(
 enum class GameObjectID {
     Player,
     BasicEnemy
+}
+
+enum class GameObjectAction {
+    Idle,
+    Moving,
+    Attack
 }

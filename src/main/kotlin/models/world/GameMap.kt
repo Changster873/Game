@@ -17,7 +17,6 @@ class GameMap {
      * Loads given map, so the game can render the associated sprites
      */
     fun loadMap(whichMap: String) {
-        State.assetLoadingState = "Loading world map"
         // clear the current map
         tiles = mutableListOf()
         currentMap = ""

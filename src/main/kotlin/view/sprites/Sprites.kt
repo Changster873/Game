@@ -1,18 +1,14 @@
 package view.sprites
 
 import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 
 /**
  * The visual sprites that represent the game models.
  */
 class Sprites {
     companion object {
-        fun get(fileName: List<String>): List<BufferedImage> {
-            return fileName.map {
-                ImageIO.read(File("src/main/resources/assets/$it.png"))
-            }
+        fun grabFromSpriteSheet(row: Int, col: Int, width: Int, height: Int, from: BufferedImage): BufferedImage {
+            return from.getSubimage((col * 48) - 48, (row * 48) - 48, width, height)
         }
 
         fun spriteFileRange(list: List<Int>, prefix: String): List<String> {

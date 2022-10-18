@@ -53,20 +53,4 @@ class BasicEnemy(
             }
         }
     }
-
-    override fun stillSprites(): List<BufferedImage> {
-        return listOf()
-    }
-
-    override fun movingSprites(): List<BufferedImage> {
-        return listOf()
-    }
-
-    override fun perishedSprites(): List<BufferedImage> {
-        return listOf()
-    }
-
-    override fun attackSprites(): List<BufferedImage> {
-        return listOf()
-    }
 }
